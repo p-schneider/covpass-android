@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+  <string name="certificate_check_validity_privacy">Zertifikat</string>
+  <string name="certificate_exists_privacy">Ein Zertifikat ist vorhanden.</string>
+  <string name="certificates_overview_privacy_certificate_title">Unbefugter Zugriff!</string>
+</resources>

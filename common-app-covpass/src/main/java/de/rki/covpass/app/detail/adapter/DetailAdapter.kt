@@ -32,6 +32,7 @@ import de.rki.covpass.app.databinding.DetailInfoboxRowBinding
 import de.rki.covpass.app.databinding.DetailReissueNotificationItemBinding
 import de.rki.covpass.app.databinding.DetailWidgetItemBinding
 import de.rki.covpass.app.detail.DetailClickListener
+import de.rki.covpass.commonapp.utils.PrivacyMode
 import de.rki.covpass.commonapp.utils.setExternalLinkImage
 import de.rki.covpass.sdk.cert.models.DGCEntryType
 import de.rki.covpass.sdk.utils.SunsetChecker
@@ -117,7 +118,8 @@ private class WidgetViewHolder(
                 ViewCompat.setScreenReaderFocusable(binding.detailStatusTextview, true)
             }
             binding.detailInfoLayout.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-            binding.detailStatusHeaderTextview.text = widget.title
+            binding.detailStatusHeaderTextview.text = if (!PrivacyMode.enabled) widget.title
+            else itemView.context.getString(R.string.certificate_check_validity_privacy)
             binding.detailStatusImageview.setImageResource(widget.statusIcon)
             binding.detailStatusTextview.text = widget.message
 

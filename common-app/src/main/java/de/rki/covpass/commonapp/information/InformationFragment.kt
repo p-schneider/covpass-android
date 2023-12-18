@@ -24,6 +24,7 @@ import de.rki.covpass.commonapp.R
 import de.rki.covpass.commonapp.databinding.InformationBinding
 import de.rki.covpass.commonapp.dependencies.commonDeps
 import de.rki.covpass.commonapp.onboarding.CommonDataProtectionFragmentNav
+import de.rki.covpass.commonapp.utils.PrivacyMode
 import de.rki.covpass.sdk.utils.SunsetChecker
 import java.util.Locale
 
@@ -46,8 +47,7 @@ public abstract class InformationFragment : BaseFragment() {
         setupActionBar()
         val isSunset = SunsetChecker.isSunset()
 
-        binding.informationAppVersionLabel.text =
-            getString(R.string.app_information_version_label, appVersion)
+        setVersionLabel()
         binding.informationAppVersionLabel.contentDescription = getString(
             R.string.app_information_version_label,
             appVersion.replace(
@@ -55,6 +55,9 @@ public abstract class InformationFragment : BaseFragment() {
                 getString(R.string.accessibility_app_information_version_number_delimiter),
             ),
         )
+        binding.informationAppVersionLabel.setOnClickListener {
+            setVersionLabel(PrivacyMode.toggle())
+        }
         if (Locale.getDefault().language == Locale.GERMAN.language) {
             binding.informationFieldEasyLanguage.apply {
                 val icon = ContextCompat.getDrawable(context, R.drawable.ic_external_link)
@@ -185,6 +188,20 @@ public abstract class InformationFragment : BaseFragment() {
         launchWhenStarted {
             commonDeps.checkContextRepository.isExpertModeOn.set(false)
         }
+    }
+
+    @SuppressLint("StringFormatInvalid", "SetTextI18n")
+    private fun setVersionLabel(privacyMode: Boolean = PrivacyMode.enabled) {
+        binding.informationAppVersionLabel.text =
+            getString(
+                if (privacyMode) R.string.app_information_version_label_privacy_prefix
+                else R.string.app_information_version_label_normal_prefix,
+            ) + getString(
+                R.string.app_information_version_label, appVersion,
+            ) + getString(
+                if (privacyMode) R.string.app_information_version_label_privacy_suffix
+                else R.string.app_information_version_label_normal_suffix,
+            )
     }
 
     private fun setupActionBar() {

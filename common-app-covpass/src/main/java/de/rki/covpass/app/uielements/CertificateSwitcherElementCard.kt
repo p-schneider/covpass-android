@@ -17,6 +17,7 @@ import androidx.core.view.isVisible
 import com.ibm.health.common.android.utils.getString
 import de.rki.covpass.app.R
 import de.rki.covpass.app.databinding.CertificateSwitcherElementCardBinding
+import de.rki.covpass.commonapp.utils.PrivacyMode
 import de.rki.covpass.sdk.cert.models.CertValidationResult
 import kotlin.properties.Delegates
 
@@ -34,7 +35,7 @@ internal class CertificateSwitcherElementCard @JvmOverloads constructor(
 
     private var status: String? by Delegates.observable(null) { _, _, newValue ->
         binding.certificateStatusTextview.text = newValue
-        binding.certificateStatusTextview.isVisible = newValue != null
+        binding.certificateStatusTextview.isVisible = newValue != null && !PrivacyMode.enabled
     }
 
     private var cardBackground: Int by Delegates.observable(R.color.info70) { _, _, newValue ->
@@ -66,8 +67,11 @@ internal class CertificateSwitcherElementCard @JvmOverloads constructor(
         subtitle: String,
         @DrawableRes imageRes: Int,
     ) {
-        binding.certificateHeaderTextview.text = header
-        binding.certificateStatusTextview.text = subtitle
+        binding.certificateHeaderTextview.text =
+            if (PrivacyMode.enabled) getString(R.string.startscreen_card_title)
+            else header
+        status = subtitle
+        binding.certificateStatusImageview.isVisible = !PrivacyMode.enabled
 
         when (certStatus) {
             CertValidationResult.Valid,

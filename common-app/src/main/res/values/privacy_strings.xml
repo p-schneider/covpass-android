@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources,MissingTranslation">
+  <string name="app_information_version_label_normal_prefix" />
+  <string name="app_information_version_label_privacy_prefix">&#x1F977; </string>
+  <string name="app_information_version_label_normal_suffix" />
+  <string name="app_information_version_label_privacy_suffix"> &#x1F977;</string>
+  <string name="certificate_check_validity_privacy">Certificate</string>
+  <string name="certificate_exists_privacy">Well, there is a Certificate.</string>
+  <string name="certificates_overview_privacy_certificate_title">Unauthorized Access!</string>
+  <string name="certificates_overview_privacy_hint_text">&#x1F64B;&#x200D;&#x2642;&#xFE0F;&#x1F446;&#x1F440;</string>
+  <string name="certificate_check_validity_detail_view_privacy_note_en">This certificate is valid proof for travel within the EU. The EU’s member countries have different travel restrictions. You can find more information in the Frequently Asked Questions. Before travelling, please check the applicable public health measures and related restrictions applied at the point of destination.\n\nPlease inform yourself about the public-health measures and corresponding restrictions at your travel destination before you travel. You can find information about the travel restrictions applicable in each EU country at #https://reopen.europa.eu::https://reopen.europa.eu#.</string>
+  <string name="certificate_check_validity_detail_view_privacy_note_de">Das Zertifikat gilt innerhalb der EU als gültiger Nachweis für Reisen. Die Mitgliedsländer haben unterschiedliche Einreisebedingungen. Mehr Informationen finden Sie in den Häufigen Fragen. Bitte informieren Sie sich vor Reiseantritt über die am Zielort geltenden Gesundheitsmaßnahmen und entsprechenden Beschränkungen.\n\nInformationen über die in den jeweiligen EU-Ländern geltenden Einreisebestimmungen finden Sie unter #https://reopen.europa.eu::https://reopen.europa.eu#.</string>
+</resources>

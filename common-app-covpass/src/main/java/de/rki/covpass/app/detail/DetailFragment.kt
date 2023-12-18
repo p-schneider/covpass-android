@@ -37,6 +37,7 @@ import de.rki.covpass.app.detail.adapter.DetailItem
 import de.rki.covpass.commonapp.BaseFragment
 import de.rki.covpass.commonapp.dialog.DialogModel
 import de.rki.covpass.commonapp.dialog.showDialog
+import de.rki.covpass.commonapp.utils.PrivacyMode
 import de.rki.covpass.sdk.cert.models.BoosterResult
 import de.rki.covpass.sdk.cert.models.CertValidationResult
 import de.rki.covpass.sdk.cert.models.DGCEntryType
@@ -350,6 +351,10 @@ internal class DetailFragment :
                 }
             }
 
+            if (PrivacyMode.enabled) {
+                personalDataList.removeLast()
+            }
+
             if (immunizationStatusWrapper.immunizationStatus != ImmunizationStatus.Invalid) {
                 personalDataList.add(
                     DetailItem.Widget(
@@ -365,7 +370,8 @@ internal class DetailFragment :
                             ImmunizationStatus.Partial -> R.drawable.status_immunization_partial
                             ImmunizationStatus.Invalid -> R.drawable.status_immunization_expired
                         },
-                        message = when (immunizationStatusWrapper.immunizationStatus) {
+                        message = if (PrivacyMode.enabled) getString(R.string.certificate_exists_privacy)
+                        else when (immunizationStatusWrapper.immunizationStatus) {
                             ImmunizationStatus.Full -> immunizationStatusWrapper.immunizationText
                             ImmunizationStatus.Partial -> {
                                 immunizationStatusWrapper.immunizationText.ifEmpty {
@@ -376,7 +382,7 @@ internal class DetailFragment :
                             ImmunizationStatus.Invalid ->
                                 getString(R.string.infschg_cert_overview_immunisation_invalid)
                         },
-                        subtitle = if (immunizationStatusWrapper.fullImmunityBasedOnRecoveryDate.isNotEmpty()) {
+                        subtitle = if (PrivacyMode.enabled) null else if (immunizationStatusWrapper.fullImmunityBasedOnRecoveryDate.isNotEmpty()) {
                             getString(
                                 R.string.infschg_cert_overview_immunisation_time_from,
                                 immunizationStatusWrapper.fullImmunityBasedOnRecoveryDate,
@@ -389,7 +395,7 @@ internal class DetailFragment :
                 )
             }
 
-            if (groupedCertificate.isBoosterReadyForReissue() && !isSunset) {
+            if (groupedCertificate.isBoosterReadyForReissue() && !isSunset && !PrivacyMode.enabled) {
                 personalDataList.add(
                     DetailItem.ReissueNotification(
                         R.string.certificate_renewal_startpage_headline,
@@ -411,7 +417,7 @@ internal class DetailFragment :
                 )
             }
 
-            if (groupedCertificate.boosterNotification.result == BoosterResult.Passed) {
+            if (groupedCertificate.boosterNotification.result == BoosterResult.Passed && !PrivacyMode.enabled) {
                 personalDataList.add(
                     DetailItem.BoosterNotification(
                         R.string.vaccination_certificate_overview_booster_vaccination_notification_title,
@@ -548,7 +554,20 @@ internal class DetailFragment :
                     }
                 }
             }
-            DetailAdapter(personalDataList + sortedCertificatesList, this, this)
+            val additionalEntries = if (PrivacyMode.enabled)
+                sortedCertificatesList.map {
+                    DetailItem.Certificate(
+                        id = it.id,
+                        type = it.type,
+                        title = getString(R.string.certificates_overview_privacy_certificate_title),
+                        subtitle = getString(R.string.certificates_overview_all_certificates_app_reference_title),
+                        date = getString(R.string.certificates_overview_privacy_hint_text),
+                        isActual = it.isActual,
+                        certStatus = it.certStatus,
+                    )
+                }
+            else sortedCertificatesList
+            DetailAdapter(personalDataList + additionalEntries, this, this)
                 .attachTo(binding.detailVaccinationList)
         }
     }
@@ -562,7 +581,8 @@ internal class DetailFragment :
     }
 
     override fun onCovCertificateClicked(id: String, dgcEntryType: DGCEntryType) {
-        when (dgcEntryType) {
+        if (PrivacyMode.enabled) findNavigator().push(DummyDetailFragmentNav(id))
+        else when (dgcEntryType) {
             VaccinationCertType.VACCINATION_INCOMPLETE,
             VaccinationCertType.VACCINATION_COMPLETE,
             VaccinationCertType.VACCINATION_FULL_PROTECTION,
